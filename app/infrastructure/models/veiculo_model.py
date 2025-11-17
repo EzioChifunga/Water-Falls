@@ -24,6 +24,7 @@ class VeiculoModel(Base):
     quilometragem = Column(Numeric(12, 2), nullable=True)
     categoria_id = Column(UUID(as_uuid=True), ForeignKey("categorias_veiculos.id"), nullable=False)
     diaria = Column(Numeric(10, 2), nullable=False)
+    image_url = Column(String(255), nullable=True)
     status = Column(
         ENUM('DISPONIVEL', 'ALUGADO', 'RESERVADO', 'MANUTENCAO', 'FORA_AREA', name='status_veiculo'),
         nullable=False,

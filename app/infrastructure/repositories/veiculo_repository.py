@@ -26,6 +26,7 @@ class VeiculoRepository:
             cambio=veiculo.cambio,
             quilometragem=veiculo.quilometragem,
             categoria_id=(__import__('uuid').UUID(str(veiculo.categoria_id)) if veiculo.categoria_id else None),
+            image_url=veiculo.image_url,
             diaria=veiculo.diaria,
             status=veiculo.status,
             loja_id=(__import__('uuid').UUID(str(veiculo.loja_id)) if veiculo.loja_id else None),
@@ -93,6 +94,7 @@ class VeiculoRepository:
         db_veiculo.portas = veiculo.portas
         db_veiculo.cambio = veiculo.cambio
         db_veiculo.quilometragem = veiculo.quilometragem
+        db_veiculo.image_url = veiculo.image_url
         db_veiculo.categoria_id = (__import__('uuid').UUID(str(veiculo.categoria_id)) if veiculo.categoria_id else None)
         db_veiculo.diaria = veiculo.diaria
         db_veiculo.status = veiculo.status
@@ -127,6 +129,7 @@ class VeiculoRepository:
             placa=db_veiculo.placa,
             marca=db_veiculo.marca,
             modelo=db_veiculo.modelo,
+            image_url=db_veiculo.image_url,
             ano=db_veiculo.ano,
             cor=db_veiculo.cor,
             combustivel=db_veiculo.combustivel,

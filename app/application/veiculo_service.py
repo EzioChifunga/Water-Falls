@@ -22,6 +22,7 @@ class VeiculoService:
                       portas: Optional[int] = None,
                       cambio: Optional[str] = None,
                       quilometragem: Optional[float] = None,
+                      image_url: Optional[str] = None,
                       latitude: Optional[float] = None, longitude: Optional[float] = None) -> Veiculo:
         """Criar um novo veículo"""
         
@@ -39,6 +40,7 @@ class VeiculoService:
             placa=placa,
             marca=marca,
             modelo=modelo,
+            image_url=image_url,
             ano=ano,
             cor=cor,
             combustivel=combustivel,
@@ -82,6 +84,7 @@ class VeiculoService:
                        portas: Optional[int] = None,
                        cambio: Optional[str] = None,
                        quilometragem: Optional[float] = None,
+                       image_url: Optional[str] = None,
                        latitude: Optional[float] = None, 
                        longitude: Optional[float] = None) -> Optional[Veiculo]:
         """Atualizar um veículo"""
@@ -104,6 +107,7 @@ class VeiculoService:
         veiculo = Veiculo(
             placa=placa,
             marca=marca,
+            image_url=image_url,
             modelo=modelo,
             ano=ano,
             cor=cor,

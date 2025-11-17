@@ -25,6 +25,7 @@ class Veiculo:
     marca: str = ""
     modelo: str = ""
     ano: int = 0
+    image_url: Optional[str] = None
     categoria_id: str = ""
     diaria: float = 0.0
     status: str = "DISPONIVEL"  # DISPONIVEL, ALUGADO, RESERVADO, MANUTENCAO, FORA_AREA

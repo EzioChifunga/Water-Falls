@@ -26,6 +26,7 @@ class VeiculoCreate(BaseModel):
     portas: int | None = None
     cambio: str | None = None
     quilometragem: float | None = None
+    image_url: str | None = None
 
 
 class VeiculoUpdate(BaseModel):
@@ -44,6 +45,7 @@ class VeiculoUpdate(BaseModel):
     portas: int | None = None
     cambio: str | None = None
     quilometragem: float | None = None
+    image_url: str | None = None
 
 
 class VeiculoStatusUpdate(BaseModel):
@@ -55,6 +57,7 @@ class VeiculoResponse(BaseModel):
     placa: str
     marca: str
     modelo: str
+    image_url: str | None
     ano: int
     categoria_id: str
     diaria: float
@@ -88,6 +91,7 @@ def create_veiculo(veiculo: VeiculoCreate, db: Session = Depends(get_db)):
             categoria_id=veiculo.categoria_id,
             diaria=veiculo.diaria,
             loja_id=veiculo.loja_id,
+            image_url=veiculo.image_url,
             latitude=veiculo.latitude,
             longitude=veiculo.longitude,
             cor=veiculo.cor,
@@ -170,6 +174,7 @@ def update_veiculo(veiculo_id: str, veiculo: VeiculoUpdate, db: Session = Depend
             diaria=veiculo.diaria,
             status=veiculo.status,
             loja_id=veiculo.loja_id,
+            image_url=veiculo.image_url,
             latitude=veiculo.latitude,
             longitude=veiculo.longitude,
             cor=veiculo.cor,

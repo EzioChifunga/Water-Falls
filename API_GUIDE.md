@@ -182,6 +182,7 @@ curl -X POST http://127.0.0.1:8000/veiculos/ \
     "diaria": 150.0,
     "status": "DISPONIVEL",
     "loja_id": "uuid-loja",
+    "image_url": "https://example.com/images/car-abc1234.jpg",
     "latitude": -23.5505,
     "longitude": -46.6333
   }'
