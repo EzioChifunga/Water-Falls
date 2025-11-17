@@ -13,8 +13,8 @@ class VeiculoRepository:
     def __init__(self, db: Session):
         self.db = db
     
-    def create(self, veiculo: Veiculo) -> Veiculo:
-        """Cria um novo veículo"""
+    def create(self, veiculo: Veiculo, loja_id: str = None, quantidade: int = 1) -> Veiculo:
+        """Cria um novo veículo e adiciona ao estoque de uma loja"""
         db_veiculo = VeiculoModel(
             placa=veiculo.placa,
             marca=veiculo.marca,
@@ -29,13 +29,24 @@ class VeiculoRepository:
             image_url=veiculo.image_url,
             diaria=veiculo.diaria,
             status=veiculo.status,
-            loja_id=(__import__('uuid').UUID(str(veiculo.loja_id)) if veiculo.loja_id else None),
             latitude=veiculo.latitude,
             longitude=veiculo.longitude,
         )
         self.db.add(db_veiculo)
         self.db.commit()
         self.db.refresh(db_veiculo)
+        # Adiciona ao estoque
+        if loja_id:
+            from app.infrastructure.models.estoque_veiculo_model import EstoqueVeiculoModel
+            import uuid
+            estoque = EstoqueVeiculoModel(
+                veiculo_id=db_veiculo.id,
+                loja_id=uuid.UUID(str(loja_id)),
+                quantidade=quantidade,
+                status=db_veiculo.status
+            )
+            self.db.add(estoque)
+            self.db.commit()
         return self._to_domain(db_veiculo)
     
     def get_by_id(self, veiculo_id: str) -> Optional[Veiculo]:
@@ -59,14 +70,17 @@ class VeiculoRepository:
         return [self._to_domain(v) for v in db_veiculos]
     
     def get_by_loja(self, loja_id: str, skip: int = 0, limit: int = 100) -> List[Veiculo]:
-        """Obtém veículos de uma loja"""
-        try:
-            import uuid
-            _id = uuid.UUID(str(loja_id))
-        except Exception:
-            return []
-        db_veiculos = self.db.query(VeiculoModel).filter(VeiculoModel.loja_id == _id).offset(skip).limit(limit).all()
-        return [self._to_domain(v) for v in db_veiculos]
+        """Obtém veículos de uma loja via EstoqueVeiculoModel"""
+        from app.infrastructure.models.estoque_veiculo_model import EstoqueVeiculoModel
+        import uuid
+        _id = uuid.UUID(str(loja_id))
+        estoque = self.db.query(EstoqueVeiculoModel).filter(EstoqueVeiculoModel.loja_id == _id).offset(skip).limit(limit).all()
+        veiculos = []
+        for item in estoque:
+            db_veiculo = self.db.query(VeiculoModel).filter(VeiculoModel.id == item.veiculo_id).first()
+            if db_veiculo:
+                veiculos.append(self._to_domain(db_veiculo))
+        return veiculos
     
     def get_all(self, skip: int = 0, limit: int = 100) -> List[Veiculo]:
         """Obtém todos os veículos"""
@@ -74,17 +88,12 @@ class VeiculoRepository:
         return [self._to_domain(v) for v in db_veiculos]
     
     def update(self, veiculo_id: str, veiculo: Veiculo) -> Optional[Veiculo]:
-        """Atualiza um veículo"""
-        try:
-            import uuid
-            _id = uuid.UUID(str(veiculo_id))
-        except Exception:
-            return None
-
+        """Atualiza um veículo (sem loja_id)"""
+        import uuid
+        _id = uuid.UUID(str(veiculo_id))
         db_veiculo = self.db.query(VeiculoModel).filter(VeiculoModel.id == _id).first()
         if not db_veiculo:
             return None
-        
         db_veiculo.placa = veiculo.placa
         db_veiculo.marca = veiculo.marca
         db_veiculo.modelo = veiculo.modelo
@@ -98,10 +107,8 @@ class VeiculoRepository:
         db_veiculo.categoria_id = (__import__('uuid').UUID(str(veiculo.categoria_id)) if veiculo.categoria_id else None)
         db_veiculo.diaria = veiculo.diaria
         db_veiculo.status = veiculo.status
-        db_veiculo.loja_id = (__import__('uuid').UUID(str(veiculo.loja_id)) if veiculo.loja_id else None)
         db_veiculo.latitude = veiculo.latitude
         db_veiculo.longitude = veiculo.longitude
-        
         self.db.commit()
         self.db.refresh(db_veiculo)
         return self._to_domain(db_veiculo)
@@ -123,7 +130,7 @@ class VeiculoRepository:
     
     @staticmethod
     def _to_domain(db_veiculo: VeiculoModel) -> Veiculo:
-        """Converte modelo ORM para entidade de domínio"""
+        """Converte modelo ORM para entidade de domínio (sem loja_id)"""
         return Veiculo(
             id=str(db_veiculo.id),
             placa=db_veiculo.placa,
@@ -139,7 +146,6 @@ class VeiculoRepository:
             categoria_id=str(db_veiculo.categoria_id),
             diaria=float(db_veiculo.diaria),
             status=db_veiculo.status,
-            loja_id=str(db_veiculo.loja_id),
             latitude=float(db_veiculo.latitude) if db_veiculo.latitude else None,
             longitude=float(db_veiculo.longitude) if db_veiculo.longitude else None,
             criado_em=db_veiculo.criado_em,

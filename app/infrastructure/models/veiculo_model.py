@@ -26,11 +26,10 @@ class VeiculoModel(Base):
     diaria = Column(Numeric(10, 2), nullable=False)
     image_url = Column(String(255), nullable=True)
     status = Column(
-        ENUM('DISPONIVEL', 'ALUGADO', 'RESERVADO', 'MANUTENCAO', 'FORA_AREA', name='status_veiculo'),
+        ENUM('DISPONIVEL', 'ALUGADO', 'RESERVADO', 'MANUTENCAO', 'FORA_AREA', 'EM_USO', name='status_veiculo'),
         nullable=False,
         default='DISPONIVEL'
     )
-    loja_id = Column(UUID(as_uuid=True), ForeignKey("lojas.id"), nullable=False)
     latitude = Column(Numeric(9, 6), nullable=True)
     longitude = Column(Numeric(9, 6), nullable=True)
     criado_em = Column(DateTime, default=func.now(), nullable=False)

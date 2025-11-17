@@ -17,6 +17,7 @@ class VeiculoService:
     
     def create_veiculo(self, placa: str, marca: str, modelo: str, ano: int, 
                       categoria_id: str, diaria: float, loja_id: str,
+                      quantidade: int = 1,
                       cor: Optional[str] = None,
                       combustivel: Optional[str] = None,
                       portas: Optional[int] = None,
@@ -24,18 +25,15 @@ class VeiculoService:
                       quilometragem: Optional[float] = None,
                       image_url: Optional[str] = None,
                       latitude: Optional[float] = None, longitude: Optional[float] = None) -> Veiculo:
-        """Criar um novo veículo"""
-        
+        """Criar um novo veículo e adicionar ao estoque de uma loja"""
         # Validar se placa já existe
         existing_placa = self.veiculo_repo.get_by_placa(placa)
         if existing_placa:
             raise ValueError(f"Já existe um veículo com a placa {placa}")
-        
         # Validar se categoria existe
         categoria = self.categoria_repo.get_by_id(categoria_id)
         if not categoria:
             raise ValueError(f"Categoria {categoria_id} não encontrada")
-        
         veiculo = Veiculo(
             placa=placa,
             marca=marca,
@@ -50,12 +48,10 @@ class VeiculoService:
             categoria_id=categoria_id,
             diaria=diaria,
             status="DISPONIVEL",
-            loja_id=loja_id,
             latitude=latitude,
             longitude=longitude,
         )
-        
-        return self.veiculo_repo.create(veiculo)
+        return self.veiculo_repo.create(veiculo, loja_id=loja_id, quantidade=quantidade)
     
     def get_veiculo(self, veiculo_id: str) -> Optional[Veiculo]:
         """Obter um veículo pelo ID"""
@@ -79,7 +75,7 @@ class VeiculoService:
     
     def update_veiculo(self, veiculo_id: str, placa: str, marca: str, modelo: str, 
                        ano: int, categoria_id: str, diaria: float, status: str,
-                       loja_id: str, cor: Optional[str] = None,
+                       cor: Optional[str] = None,
                        combustivel: Optional[str] = None,
                        portas: Optional[int] = None,
                        cambio: Optional[str] = None,
@@ -87,23 +83,19 @@ class VeiculoService:
                        image_url: Optional[str] = None,
                        latitude: Optional[float] = None, 
                        longitude: Optional[float] = None) -> Optional[Veiculo]:
-        """Atualizar um veículo"""
-        
+        """Atualizar um veículo (sem loja_id)"""
         existing = self.veiculo_repo.get_by_id(veiculo_id)
         if not existing:
             return None
-        
         # Validar se placa já existe em outro veículo
         if placa != existing.placa:
             existing_placa = self.veiculo_repo.get_by_placa(placa)
             if existing_placa:
                 raise ValueError(f"Já existe outro veículo com a placa {placa}")
-        
         # Validar categoria
         categoria = self.categoria_repo.get_by_id(categoria_id)
         if not categoria:
             raise ValueError(f"Categoria {categoria_id} não encontrada")
-        
         veiculo = Veiculo(
             placa=placa,
             marca=marca,
@@ -118,11 +110,9 @@ class VeiculoService:
             categoria_id=categoria_id,
             diaria=diaria,
             status=status,
-            loja_id=loja_id,
             latitude=latitude,
             longitude=longitude,
         )
-        
         return self.veiculo_repo.update(veiculo_id, veiculo)
     
     def update_status(self, veiculo_id: str, novo_status: str) -> Optional[Veiculo]:
