@@ -1,0 +1,52 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Git
+.git
+.gitignore
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Documentação
+README.md
+QUICKSTART.md
+API_GUIDE.md
+*.md
+
+# Variáveis de ambiente
+.env
+.env.local
+
+# Logs
+logs/
+*.log
+
+# Migrations (será copiada no volume)
+migrations/versions/
+
+# Test
+test_all_cruds.py
+tests/
