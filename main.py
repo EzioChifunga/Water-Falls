@@ -10,6 +10,7 @@ from app.infrastructure.models import (
     CarModel, EnderecoModel, ClienteModel, CategoriaVeiculoModel,
     LojaModel, VeiculoModel, ReservaModel, PagamentoModel, HistoricoStatusVeiculoModel
 )
+from app.infrastructure.models.estoque_veiculo_model import EstoqueVeiculoModel
 from app.infrastructure.config.database import Base
 
 # Importar rotas
@@ -22,6 +23,7 @@ from app.presentation.categoria_veiculo_controller import router as categoria_ro
 from app.presentation.endereco_controller import router as endereco_router
 from app.presentation.pagamento_controller import router as pagamento_router
 from app.presentation.historico_status_veiculo_controller import router as historico_router
+from app.presentation.estoque_controller import router as estoque_router
 
 
 # Criar tabelas no banco de dados
@@ -53,6 +55,7 @@ app.include_router(categoria_router)
 app.include_router(endereco_router)
 app.include_router(pagamento_router)
 app.include_router(historico_router)
+app.include_router(estoque_router)
 
 
 @app.get("/")
