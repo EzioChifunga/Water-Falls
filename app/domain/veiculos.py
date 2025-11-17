@@ -52,7 +52,8 @@ class Veiculo:
             raise ValueError("Ano deve ser maior que 0")
         if self.diaria <= 0:
             raise ValueError("Diária deve ser maior que 0")
-        valid_status = ["DISPONIVEL", "ALUGADO", "RESERVADO", "MANUTENCAO", "FORA_AREA"]
+        # Atualizado: inclui 'EM_USO' para refletir novo status adicionado no DB
+        valid_status = ["DISPONIVEL", "ALUGADO", "RESERVADO", "MANUTENCAO", "FORA_AREA", "EM_USO"]
         if self.status not in valid_status:
             raise ValueError(f"Status inválido. Deve ser um de: {valid_status}")
 
@@ -70,7 +71,8 @@ class HistoricoStatusVeiculo:
         """Validações básicas"""
         if not self.veiculo_id:
             raise ValueError("Veículo é obrigatório")
-        valid_status = ["DISPONIVEL", "ALUGADO", "RESERVADO", "MANUTENCAO", "FORA_AREA"]
+        # Deve corresponder aos valores possíveis do enum 'status_veiculo' no DB
+        valid_status = ["DISPONIVEL", "ALUGADO", "RESERVADO", "MANUTENCAO", "FORA_AREA", "EM_USO"]
         if self.status_atual not in valid_status:
             raise ValueError(f"Status atual inválido. Deve ser um de: {valid_status}")
         if self.status_anterior and self.status_anterior not in valid_status:
